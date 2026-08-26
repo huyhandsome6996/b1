@@ -1,0 +1,295 @@
+/* ============================================================
+   CSS CỦA DỰ ÁN MẪU - đọc theo khối, mọi kỹ thuật đều từ bài 2.1-2.4
+   Ý tưởng lớn: hai theme SÁNG/TỐI chỉ khác nhau giá trị biến màu.
+   main.js bật class "theme-toi" trên <body> là toàn trang đổi màu.
+   ============================================================ */
+
+/* ---------- 1. BIẾN MÀU + RESET ---------- */
+:root {
+  --mau-chinh: #2563eb;
+  --mau-chinh-dam: #1d4ed8;
+  --chu: #1e293b;
+  --chu-nhat: #64748b;
+  --nen: #f8fafc;
+  --nen-the: #ffffff;
+  --vieng: #e2e8f0;
+}
+
+body.theme-toi {
+  --chu: #f1f5f9;
+  --chu-nhat: #94a3b8;
+  --nen: #0f172a;
+  --nen-the: #1e293b;
+  --vieng: #334155;
+}
+
+* {
+  margin: 0; padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: var(--chu);
+  background: var(--nen);
+  line-height: 1.6;
+  transition: background .4s, color .4s;   /* đổi theme mượt */
+}
+
+img { max-width: 100%; display: block; }
+a { text-decoration: none; color: inherit; }
+
+/* ---------- 2. THANH ĐIỀU HƯỚNG (flexbox) ---------- */
+.navbar {
+  position: sticky; top: 0; z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 5%;
+  background: var(--nen-the);
+  box-shadow: 0 2px 10px rgba(0,0,0,.08);
+}
+
+.logo { font-size: 22px; font-weight: bold; color: var(--mau-chinh); }
+.logo span { color: var(--chu); }
+
+.menu {
+  display: flex;
+  gap: 26px;
+  list-style: none;
+}
+.menu a { font-weight: 500; transition: color .25s; }
+.menu a:hover { color: var(--mau-chinh); }
+
+.nut-tron {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  border: 2px solid var(--vieng);
+  background: transparent;
+  color: var(--chu);
+  cursor: pointer;
+  font-size: 16px;
+  transition: all .25s;
+}
+.nut-tron:hover { border-color: var(--mau-chinh); color: var(--mau-chinh); }
+
+.chi-hien-mobile { display: none; }   /* hamburger ẩn trên desktop */
+
+/* ---------- 3. HERO ---------- */
+.hero {
+  min-height: 88vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;       /* công thức căn giữa tuyệt đối */
+  text-align: center;
+  padding: 24px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+}
+.loi-chao { opacity: .85; letter-spacing: 3px; text-transform: uppercase; font-size: 14px; }
+.hero h1 { font-size: clamp(36px, 7vw, 60px); margin: 6px 0; }   /* clamp co giãn theo màn hình */
+.hero h2 { font-weight: 400; opacity: .9; margin-bottom: 12px; }
+.mo-ta  { max-width: 560px; margin: 0 auto 28px; }
+.hang-nut { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+.btn {
+  display: inline-block;
+  padding: 12px 30px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: transform .25s, box-shadow .25s, background .25s;
+}
+.btn:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,.22); }
+.btn-chinh { background: #fff; color: #4338ca; font-weight: bold; }
+.btn-phu   { background: rgba(255,255,255,.16); color: #fff; border: 2px solid rgba(255,255,255,.5); }
+
+/* ---------- 4. PHẦN CHUNG + TIÊU ĐỀ ---------- */
+.phan { padding: 80px 5%; max-width: 1080px; margin: 0 auto; }
+.phan.nen-xam { background: var(--nen-the); max-width: none; padding-left: 5%; padding-right: 5%; }
+.phan.nen-xam > * { max-width: 1080px; margin-left: auto; margin-right: auto; }
+
+.tieu-de-phan {
+  text-align: center;
+  font-size: 30px;
+  margin-bottom: 44px;
+  position: relative;
+}
+/* vạch nhỏ tô điểm dưới tiêu đề - pseudo-element bài 2.4 */
+.tieu-de-phan::after {
+  content: "";
+  display: block;
+  width: 64px; height: 4px;
+  margin: 10px auto 0;
+  border-radius: 999px;
+  background: var(--mau-chinh);
+}
+
+/* ---------- 5. GIỚI THIỆU ---------- */
+.gioi-thieu-grid {
+  display: grid;
+  grid-template-columns: 300px 1fr;    /* ảnh trái - chữ phải */
+  gap: 44px;
+  align-items: center;
+}
+.anh-dai-dien {
+  border-radius: 20px;
+  box-shadow: 0 16px 32px rgba(37,99,235,.22);
+}
+.ds-ky-nang {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 18px;
+}
+.ds-ky-nang li {
+  background: var(--nen-the);
+  border: 2px solid var(--vieng);
+  border-radius: 12px;
+  padding: 10px 14px;
+  transition: transform .25s, border-color .25s;
+}
+.ds-ky-nang li:hover { transform: translateX(6px); border-color: var(--mau-chinh); }
+.ds-ky-nang i { color: var(--mau-chinh); margin-right: 8px; }
+
+/* ---------- 6. KHU DỰ ÁN (grid + filter) ---------- */
+.hang-loc {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+.nut-loc {
+  padding: 8px 22px;
+  border-radius: 999px;
+  border: 2px solid var(--vieng);
+  background: var(--nen);
+  color: var(--chu);
+  cursor: pointer;
+  font-size: 15px;
+  transition: all .25s;
+}
+.nut-loc:hover { border-color: var(--mau-chinh); }
+.nut-loc.dang-chon {
+  background: var(--mau-chinh);
+  border-color: var(--mau-chinh);
+  color: #fff;
+}
+
+.luoi-du-an {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 26px;
+}
+
+.the-du-an {
+  background: var(--nen-the);
+  border-radius: 16px;
+  overflow: hidden;               /* góc ảnh tròn theo card */
+  box-shadow: 0 6px 18px rgba(0,0,0,.09);
+  transition: transform .25s, box-shadow .25s;
+  animation: hien-len .45s ease both;
+}
+.the-du-an:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 30px rgba(0,0,0,.18);
+}
+.the-du-an img { height: 170px; object-fit: cover; width: 100%; }
+
+.noi-dung-card { padding: 18px; }
+.noi-dung-card h3 { margin-bottom: 6px; }
+.tag {
+  display: inline-block;
+  font-size: 13px;
+  padding: 2px 12px;
+  margin-bottom: 10px;
+  border-radius: 999px;
+  background: rgba(37,99,235,.12);
+  color: var(--mau-chinh);
+}
+
+/* ---------- 7. FORM LIÊN HỆ ---------- */
+.form-lien-he {
+  max-width: 520px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.o-nhap { display: flex; flex-direction: column; gap: 6px; }
+.o-nhap label { font-weight: 600; font-size: 15px; }
+.o-nhap input,
+.o-nhap textarea {
+  padding: 12px 14px;
+  border: 2px solid var(--vieng);
+  border-radius: 10px;
+  background: var(--nen-the);
+  color: var(--chu);
+  font: inherit;
+  transition: border-color .25s;
+}
+.o-nhap input:focus,
+.o-nhap textarea:focus {
+  outline: none;
+  border-color: var(--mau-chinh);
+}
+.o-nhap.sai input,
+.o-nhap.sai textarea { border-color: #dc2626; }   /* JS thêm class sai */
+
+.bao-loi { color: #dc2626; font-size: 14px; min-height: 20px; }
+
+.thong-bao-chung {
+  min-height: 26px;
+  font-weight: bold;
+  text-align: center;
+}
+.thong-bao-chung.thanh-cong { color: #16a34a; }
+
+/* ---------- 8. FOOTER ---------- */
+.chan-trang {
+  text-align: center;
+  padding: 34px 16px;
+  color: var(--chu-nhat);
+  font-size: 15px;
+}
+.mxh { display: flex; gap: 20px; justify-content: center; margin-top: 12px; }
+.mxh a { font-size: 24px; transition: color .25s, transform .25s; }
+.mxh a:hover { color: var(--mau-chinh); transform: translateY(-4px); }
+
+/* ---------- 9. ANIMATION ---------- */
+@keyframes hien-len {
+  from { opacity: 0; transform: translateY(26px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- 10. RESPONSIVE ---------- */
+@media (max-width: 900px) {
+  .gioi-thieu-grid { grid-template-columns: 1fr; }        /* ảnh trên chữ dưới */
+  .anh-dai-dien { margin: 0 auto; width: 240px; }
+}
+
+@media (max-width: 640px) {
+  /* Menu thu về dạng dọc, click hamburger mới mở (main.js toggle class mo-menu) */
+  .menu {
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    flex-direction: column;
+    background: var(--nen-the);
+    padding: 18px 5%;
+    gap: 14px;
+    box-shadow: 0 10px 16px rgba(0,0,0,.12);
+
+    /* mẹo đóng/mở mượt bằng max-height thay vì display:none */
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .35s ease, padding .35s ease;
+    padding-top: 0; padding-bottom: 0;
+  }
+  body.mo-menu .menu { max-height: 300px; padding-top: 18px; padding-bottom: 18px; }
+  .chi-hien-mobile { display: inline-flex; align-items: center; justify-content: center; }
+  .phan { padding: 56px 5%; }
+}

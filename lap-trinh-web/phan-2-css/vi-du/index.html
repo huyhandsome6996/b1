@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<!-- DEMO CUỐI PHẦN 2: TRANG HỒ SƠ ĐÃ TRANG TRÍ BẰNG CSS.
+     Giống nội dung phan-1-html/vi-du/index.html nhưng:
+     - nhúng file style.css bên ngoài (chuẩn đồ án)
+     - navbar flexbox, bảng đẹp, form dễ thương, responsive
+     Mở bằng Live Server để thấy CSS áp dụng chuẩn. -->
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hồ sơ cá nhân - Bản đã có CSS</title>
+  <!-- Cách 3 (EXTERNAL): toàn bộ rule nằm trong style.css cạnh file này -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <a class="logo" href="#">An<span>.dev</span></a>
+    <ul class="menu">
+      <li><a href="#gioi-thieu">Giới thiệu</a></li>
+      <li><a href="#diem">Bảng điểm</a></li>
+      <li><a href="#lien-he">Liên hệ</a></li>
+    </ul>
+  </nav>
+
+  <header class="hero">
+    <h1>Nguyễn Minh An</h1>
+    <p>Sinh viên Công nghệ thông tin - người mới nhưng không sợ code</p>
+    <a class="btn" href="#lien-he">Gửi lời nhắn</a>
+  </header>
+
+  <main class="container">
+
+    <section id="gioi-thieu" class="card">
+      <h2>Về tôi</h2>
+      <div class="gioi-thieu">
+        <img class="avatar"
+             src="https://placehold.co/160x160/orange/white?text=An"
+             alt="Ảnh đại diện placeholder">
+        <p>Xin chào! Tôi đang học lập trình web. Trang này là bản
+          <strong>HTML + CSS thuần</strong>: hình nào màu nào đều đến từ
+          <code>style.css</code>, chưa một dòng JavaScript.</p>
+      </div>
+      <p class="slogan"><mark>Học là để làm, làm là để chia sẻ.</mark></p>
+    </section>
+
+    <section id="diem" class="card">
+      <h2>Bảng điểm</h2>
+      <table class="bang-diem">
+        <thead>
+          <tr><th>Môn học</th><th>Tín chỉ</th><th>Điểm</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Lập trình Web</td><td>3</td><td>10</td></tr>
+          <tr><td>Toán rời rạc</td><td>3</td><td>8</td></tr>
+          <tr><td>Tiếng Anh B1</td><td>3</td><td>9</td></tr>
+          <tr class="tong"><td colspan="2">Tổng cộng</td><td>27/30</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="lien-he" class="card">
+      <h2>Gửi lời nhắn</h2>
+      <form class="form-lien-he">
+        <label for="hoten">Họ tên</label>
+        <input type="text" id="hoten" required>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" required>
+
+        <label for="noidung">Nội dung</label>
+        <textarea id="noidung" rows="4"></textarea>
+
+        <button type="submit" class="btn">Gửi đi</button>
+      </form>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Nguyễn Minh An - email: minhan@example.com</p>
+  </footer>
+
+</body>
+</html>

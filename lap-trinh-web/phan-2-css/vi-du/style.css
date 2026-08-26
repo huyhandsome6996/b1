@@ -1,0 +1,191 @@
+/* ============================================================
+   STYLE.CSS - DEMO PHẦN 2
+   Đọc theo thứ tự: biến toàn cục -> reset -> từng khối trang
+   Mọi kỹ thuật đều được dạy ở bài 2.1 - 2.4.
+   ============================================================ */
+
+/* --- Bài 2.4: Biến CSS quản lý màu tại một chỗ --- */
+:root {
+  --mau-chinh: #2563eb;      /* xanh dương thương hiệu */
+  --mau-chinh-dam: #1e40af;
+  --chu: #1e293b;
+  --nen-trang: #f8fafc;
+  --nen-the: #ffffff;
+}
+
+/* --- Bài 2.1: Bộ chọn * + Bài 2.2: chống bẫy box model --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: var(--chu);
+  background: var(--nen-trang);
+  line-height: 1.6;
+}
+
+/* ---------- NAVBAR (Bài 2.3 Flexbox) ---------- */
+.navbar {
+  display: flex;
+  justify-content: space-between;   /* logo trái, menu phải */
+  align-items: center;
+  padding: 14px 5%;
+  background: var(--nen-the);
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  position: sticky;                 /* dính đầu trang khi cuộn */
+  top: 0;
+  z-index: 100;
+}
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+  text-decoration: none;
+  color: var(--mau-chinh);
+}
+.logo span { color: var(--chu); }
+.menu {
+  display: flex;
+  gap: 24px;                        /* khoảng cách các mục menu */
+  list-style: none;
+}
+.menu a {
+  text-decoration: none;            /* bỏ gạch chân link */
+  color: var(--chu);
+  position: relative;
+  transition: color .3s;
+}
+/* Bài 2.4: vạch phát sáng dưới chữ khi rê chuột */
+.menu a::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -6px;
+  width: 0; height: 2px;
+  background: var(--mau-chinh);
+  transition: width .3s ease;
+}
+.menu a:hover { color: var(--mau-chinh); }
+.menu a:hover::after { width: 100%; }
+
+/* ---------- HERO (Bài 2.1 gradient + Bài 2.4 animation) ---------- */
+.hero {
+  text-align: center;
+  padding: 70px 20px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  animation: fade-in .8s ease-out both;   /* chạy keyframes cuối file */
+}
+.hero p { opacity: .9; margin-bottom: 24px; }
+
+/* ---------- NÚT BẤM (Bài 2.4 transform + transition) ---------- */
+.btn {
+  display: inline-block;
+  background: var(--nen-the);
+  color: var(--mau-chinh);
+  padding: 10px 28px;
+  border-radius: 999px;
+  border: none;
+  text-decoration: none;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all .25s ease;
+}
+.btn:hover {
+  background: var(--mau-chinh-dam);
+  color: white;
+  transform: translateY(-3px);       /* nhấc lên chút xíu */
+  box-shadow: 0 8px 16px rgba(0,0,0,.2);
+}
+
+/* ---------- CONTAINER + CARD (Bài 2.2 box model) ---------- */
+.container {
+  max-width: 800px;                  /* khống chế độ rộng để đọc thoải mái */
+  margin: 32px auto;                 /* auto ngang = căn giữa khối */
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;            /* xếp card chồng dọc */
+  gap: 24px;
+}
+.card {
+  background: var(--nen-the);
+  border-radius: 16px;               /* bo góc hiện đại */
+  padding: 28px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.06);
+}
+.card h2 {
+  margin-bottom: 16px;
+  color: var(--mau-chinh);
+  font-size: 20px;
+}
+
+/* Giới thiệu: ảnh + chữ nằm cạnh nhau nhờ flex */
+.gioi-thieu { display: flex; gap: 20px; align-items: center; }
+.avatar {
+  width: 120px; height: 120px;
+  object-fit: cover;                 /* ảnh không méo khi bị ép kích thước */
+  border-radius: 50%;                /* tròn as a coin */
+  border: 4px solid var(--mau-chinh);
+}
+.slogan { margin-top: 14px; }
+mark { background: #fde68a; padding: 2px 6px; border-radius: 6px; }
+
+/* ---------- BẢNG (Bài 2.1 pseudo-class nth-child) ---------- */
+.bang-diem {
+  width: 100%;
+  border-collapse: collapse;         /* dính viền liền mạch */
+}
+.bang-diem th,
+.bang-diem td {
+  padding: 10px 14px;
+  text-align: left;
+}
+.bang-diem thead th {
+  background: var(--mau-chinh);
+  color: white;
+}
+.bang-diem tbody tr:nth-child(even) { background: #eff6ff; } /* kẻ sọc dòng chẵn */
+.bang-diem tbody tr:hover { background: #dbeafe; }           /* highlight khi rê */
+.bang-diem .tong { font-weight: bold; }
+
+/* ---------- FORM (Bài 2.1 focus state) ---------- */
+.form-lien-he { display: flex; flex-direction: column; gap: 8px; }
+.form-lien-he label { font-weight: 600; margin-top: 8px; }
+.form-lien-he input,
+.form-lien-he textarea {
+  padding: 10px 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font: inherit;
+  transition: border-color .25s;
+}
+.form-lien-he input:focus,
+.form-lien-he textarea:focus {
+  outline: none;
+  border-color: var(--mau-chinh);    /* ô đang gõ sáng viền xanh */
+}
+.form-lien-he .btn { align-self: flex-start; margin-top: 12px; }
+
+/* ---------- FOOTER ---------- */
+footer {
+  text-align: center;
+  padding: 24px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+/* ---------- Bài 2.4: Keyframes ---------- */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- RESPONSIVE (Bài 2.4 media queries) ---------- */
+@media (max-width: 600px) {
+  /* Menu đổ dọc, logo xuống dưới menu lên trên */
+  .navbar { flex-direction: column-reverse; gap: 10px; }
+  .menu { gap: 14px; font-size: 15px; }
+  .hero { padding: 48px 16px; }
+  .gioi-thieu { flex-direction: column; text-align: center; }
+}

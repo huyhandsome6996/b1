@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<!-- MINI APP 3: TRÒ CHƠI ĐOÁN SỐ
+     Kỹ năng luyện: Math.random - vòng lặp logic qua nhiều lần đoán -
+     if else xếp loại - đếm số lần thử.
+     Gợi ý nâng cao tự luyện: thêm chế độ chọn khoảng 1-100, bảng kỷ lục ít lượt đoán nhất. -->
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trò chơi đoán số</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #fef3c7;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh;
+  }
+  .game {
+    background: white;
+    padding: 28px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.12);
+    width: 320px;
+    text-align: center;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  input {
+    padding: 10px;
+    font-size: 18px;
+    text-align: center;
+    border: 2px solid #fcd34d;
+    border-radius: 8px;
+  }
+  button {
+    padding: 10px;
+    font-size: 16px;
+    background: #d97706;
+    color: white;
+    border: none; border-radius: 8px;
+    cursor: pointer;
+  }
+  button:hover { background: #b45309; }
+  #goiY { min-height: 24px; font-weight: bold; }
+  .cao  { color: #dc2626; }   /* đoán cao */
+  .thap { color: #2563eb; }   /* đoán thấp */
+  .win  { color: #16a34a; }
+</style>
+</head>
+<body>
+
+<div class="game">
+  <h1>Doán số bí mật</h1>
+  <p>Tôi đang nghĩ một số từ <strong>1 đến 50</strong>. Đoán xem?</p>
+
+  <input type="number" id="oDoan" placeholder="Nhập 1-50">
+  <button id="nutDoan">Đoán!</button>
+  <p id="goiY"></p>
+  <p>Số lần đoán: <strong id="soLan">0</strong></p>
+  <button id="nutLai" style="background:#6b7280">Chơi lại</button>
+</div>
+
+<script>
+/* Bước 1: máy "nghĩ" ra số ngẫu nhiên nguyên 1..50
+   Math.random()      -> số thập phân 0 .. <1
+   * 50               -> 0 .. <50
+   Math.floor(...)    -> cắt thành nguyên 0..49
+   + 1                -> dời sang 1..50   (công thức chuẩn khắc cốt ghi da) */
+let soBiMat = Math.floor(Math.random() * 50) + 1;
+
+let soLanDoan = 0;
+const goiY  = document.getElementById("goiY");
+const soLan = document.getElementById("soLan");
+
+document.getElementById("nutDoan").addEventListener("click", function () {
+  const doan = Number(document.getElementById("oDoan").value);
+
+  // validate trước đã
+  if (doan < 1 || doan > 50 || document.getElementById("oDoan").value === "") {
+    goiY.textContent = "Chỉ được nhập từ 1 đến 50 nhé!";
+    goiY.className = "cao";
+    return;
+  }
+
+  soLanDoan++;
+  soLan.textContent = soLanDoan;
+
+  if (doan === soBiMat) {
+    goiY.textContent =
+      `CHÍNH XÁC! Số bí mật là ${soBiMat}. Bạn đoán ${soLanDoan} lần.` +
+      (soLanDoan <= 5 ? " Siêu phỏng đoán!" : "");
+    goiY.className = "win";
+  } else if (doan > soBiMat) {          // gợi ý hai chiều giúp hội tụ nhanh
+    goiY.textContent = `${doan} LỚN hơn số bí mật. Thử nhỏ hơn đi.`;
+    goiY.className = "cao";
+  } else {
+    goiY.textContent = `${doan} NHỎ hơn số bí mật. Thử lớn hơn đi.`;
+    goiY.className = "thap";
+  }
+});
+
+// chơi lại: random số mới và reset bộ đếm
+document.getElementById("nutLai").addEventListener("click", function () {
+  soBiMat = Math.floor(Math.random() * 50) + 1;
+  soLanDoan = 0;
+  soLan.textContent = 0;
+  document.getElementById("oDoan").value = "";
+  goiY.textContent = "Số mới đã sẵn sàng! Bắt đầu đoán đi.";
+  goiY.className = "";
+});
+</script>
+
+</body>
+</html>

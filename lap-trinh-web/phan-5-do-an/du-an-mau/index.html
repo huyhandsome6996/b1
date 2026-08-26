@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<!-- ============================================================
+     DỰ ÁN MẪU ĐỒ ÁN CUỐI KỲ - PORTFOLIO CÁ NHÂN
+     ------------------------------------------------------------
+     Cấu trúc 3 lớp chuẩn:
+       index.html  : chỉ lo NỘI DUNG và cấu trúc
+       css/style.css : toàn bộ giao diện
+       js/main.js    : toàn bộ hành vi (dark mode, render dự án,
+                       bộ lọc, validate form, lưu localStorage)
+
+     Cách chạy: mở bằng Live Server trong VS Code (chuột phải ->
+     Open with Live Server). Mở F12 để xem Console phải SẠCH.
+     ============================================================ -->
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>An Dev - Portfolio cá nhân</title>
+
+  <!-- Icon font một dòng - không cần cài gì cả -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ================= THANH ĐIỀU HƯỚNG ================= -->
+  <nav class="navbar" id="navbar">
+    <a class="logo" href="#trang-chu">An<span>.dev</span></a>
+
+    <ul class="menu" id="menu">
+      <li><a href="#trang-chu">Trang chủ</a></li>
+      <li><a href="#gioi-thieu">Giới thiệu</a></li>
+      <li><a href="#du-an">Dự án</a></li>
+      <li><a href="#lien-he">Liên hệ</a></li>
+    </ul>
+
+    <!-- Nút dark mode: JS chỉ việc toggle class trên body -->
+    <button id="nut-theme" class="nut-tron" title="Đổi giao diện sáng/tối">
+      <i class="fa-solid fa-moon"></i>
+    </button>
+
+    <!-- Nút hamburger cho mobile -->
+    <button id="nut-menu-mobile" class="nut-tron chi-hien-mobile" title="Menu">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </nav>
+
+  <!-- ================= HERO / TRANG CHỦ ================= -->
+  <header class="hero" id="trang-chu">
+    <div class="hero-noi-dung">
+      <p class="loi-chao">Xin chào, tôi là</p>
+      <h1>Nguyễn Minh An</h1>
+      <h2>Sinh viên Công nghệ thông tin</h2>
+      <p class="mo-ta">Người mới học lập trình web nhưng tin rằng
+        mọi website tuyệt vời đều bắt đầu từ file HTML trắng trơn.</p>
+      <div class="hang-nut">
+        <a href="#du-an" class="btn btn-chinh">Xem dự án</a>
+        <a href="#lien-he" class="btn btn-phu">Liên hệ tôi</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ================= GIỚI THIỆU ================= -->
+    <section class="phan" id="gioi-thieu">
+      <h2 class="tieu-de-phan">Giới thiệu</h2>
+      <div class="gioi-thieu-grid">
+        <img class="anh-dai-dien"
+             src="https://placehold.co/300x300/2563eb/ffffff?text=An+Dev"
+             alt="Ảnh đại diện của Nguyễn Minh An">
+        <div>
+          <p>Tôi là sinh viên năm nhất, hiện đang theo học môn Lập trình Web với
+            ba công cụ cơ bản nhưng mạnh mẽ nhất: <strong>HTML, CSS, JavaScript</strong>.</p>
+          <p>Đây chính là dự án mẫu của bộ tài liệu học - bạn có thể dùng nó làm
+            khuôn mẫu để phát triển thành đồ án của riêng mình.</p>
+          <ul class="ds-ky-nang">
+            <li><i class="fa-brands fa-html5"></i> HTML5 ngữ nghĩa</li>
+            <li><i class="fa-brands fa-css3-alt"></i> CSS3 + Responsive</li>
+            <li><i class="fa-brands fa-js"></i> JavaScript DOM & Events</li>
+            <li><i class="fa-brands fa-git-alt"></i> Git cơ bản</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= DỰ ÁN (JS RENDER TỪ MẢNG) =================
+         Lưu ý: phần tử ul này TRỐNG! Toàn bộ card sẽ được main.js
+         nặn ra từ mảng dữ liệu duAnCuaToi - mô hình data -> render. -->
+    <section class="phan nen-xam" id="du-an">
+      <h2 class="tieu-de-phan">Dự án của tôi</h2>
+
+      <div class="hang-loc">
+        <button class="nut-loc dang-chon" data-loc="tat-ca">Tất cả</button>
+        <button class="nut-loc" data-loc="web">Web</button>
+        <button class="nut-loc" data-loc="game">Game</button>
+        <button class="nut-loc" data-loc="cong-cu">Công cụ</button>
+      </div>
+
+      <div class="luoi-du-an" id="luoi-du-an"><!-- JS đổ vào đây --></div>
+    </section>
+
+    <!-- ================= FORM LIÊN HỆ (JS VALIDATE) ================= -->
+    <section class="phan" id="lien-he">
+      <h2 class="tieu-de-phan">Liên hệ</h2>
+      <form class="form-lien-he" id="form-lien-he" novalidate>
+        <!-- novalidate: tắt kiểm tra mặc định của trình duyệt để TỰ validate bằng JS -->
+
+        <div class="o-nhap">
+          <label for="ten">Họ tên *</label>
+          <input type="text" id="ten" name="ten">
+          <small class="bao-loi"></small>
+        </div>
+
+        <div class="o-nhap">
+          <label for="email">Email *</label>
+          <input type="email" id="email" name="email">
+          <small class="bao-loi"></small>
+        </div>
+
+        <div class="o-nhap">
+          <label for="tinNhan">Nội dung *(ít nhất 10 ký tự)</label>
+          <textarea id="tinNhan" rows="5" name="tinNhan"></textarea>
+          <small class="bao-loi"></small>
+        </div>
+
+        <button type="submit" class="btn btn-chinh">Gửi tin nhắn</button>
+        <p class="thong-bao-chung" id="thong-bao-chung"></p>
+      </form>
+    </section>
+
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="chan-trang">
+    <p>&copy; 2026 - Nguyen Minh An - Du an mau mon Lap trinh Web</p>
+    <div class="mxh">
+      <a href="#" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+      <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+      <a href="mailto:minhan@example.com" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
+    </div>
+  </footer>
+
+  <script src="js/main.js" defer></script>
+</body>
+</html>

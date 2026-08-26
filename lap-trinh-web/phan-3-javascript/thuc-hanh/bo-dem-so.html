@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<!-- MINI APP 1: BỘ ĐẾM SỐ
+     Kỹ năng luyện: DOM căn bản + addEventListener + cập nhật nội dung.
+     Mở file này bằng trình duyệt là chơi được ngay. -->
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bộ đếm số</title>
+<style>
+  /* CSS tối giản để tập trung vào JS */
+  body {
+    font-family: Arial, sans-serif;
+    display: flex;                 /* bài 2.3: căn giữa tuyệt đối */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    gap: 16px;
+    background: #f1f5f9;
+  }
+  h1 { color: #334155; }
+  #so-dem {
+    font-size: 80px;
+    font-weight: bold;
+    color: #2563eb;
+  }
+  .hang-nut { display: flex; gap: 12px; }
+  button {
+    padding: 12px 28px;
+    font-size: 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform .2s;
+  }
+  button:hover { transform: scale(1.08); }   /* bài 2.4 */
+  #tang  { background: #22c55e; color: white; }
+  #giam  { background: #ef4444; color: white; }
+  #reset { background: #64748b; color: white; }
+  .canh-bao { color: #b91c1c; min-height: 24px; }  /* giữ chỗ chống nhảy layout */
+</style>
+</head>
+<body>
+
+  <h1>Bộ đếm số</h1>
+  <div id="so-dem">0</div>
+  <p class="canh-bao" id="thongBao"></p>
+  <div class="hang-nut">
+    <button id="tang">+1</button>
+    <button id="giam">-1</button>
+    <button id="reset">Reset</button>
+  </div>
+
+<script>
+/* ===== BƯỚC 1: CHỌN PHẦN TỬ (bài 3.4) ===== */
+const oSo     = document.getElementById("so-dem");
+const nutTang = document.getElementById("tang");
+const nutGiam = document.getElementById("giam");
+const nutReset= document.getElementById("reset");
+const thongBao= document.getElementById("thongBao");
+
+let so = 0;                       // dữ liệu của app - biến nguồn sự thật
+
+/* ===== BƯỚC 2: HÀM RENDER - vẽ số hiện tại ra màn hình ===== */
+function hienThi() {
+  oSo.textContent = so;
+}
+
+/* ===== BƯỚC 3: GẮN SỰ KIỆN CHO TỪNG NÚT ===== */
+
+// Nút tăng: chỉ được tới 10
+nutTang.addEventListener("click", function () {
+  if (so >= 10) {
+    thongBao.textContent = "Tối đa là 10 thôi bạn ơi!";
+    return;                       // chặn không cho tăng tiếp
+  }
+  so++;
+  thongBao.textContent = "";      // xoá cảnh báo cũ
+  hienThi();
+});
+
+// Nút giảm: chỉ được xuống 0
+nutGiam.addEventListener("click", function () {
+  if (so <= 0) {
+    thongBao.textContent = "Không giảm dưới 0 được nhé!";
+    return;
+  }
+  so--;
+  thongBao.textContent = "";
+  hienThi();
+});
+
+// Nút reset: về 0
+nutReset.addEventListener("click", function () {
+  so = 0;
+  thongBao.textContent = "";
+  hienThi();
+});
+
+hienThi();                        // gọi lần đầu khi trang vừa mở
+</script>
+
+</body>
+</html>

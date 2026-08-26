@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<!-- DEMO CUỐI PHẦN 1: trang hồ sơ cá nhân thuần HTML.
+     Mở trực tiếp bằng trình duyệt để xem kết quả.
+     Bản "đã trang trí bằng CSS" nằm ở phan-2-css/vi-du/index.html - hãy so sánh 2 file này! -->
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hồ sơ cá nhân - Nguyễn Minh An</title>
+</head>
+<body>
+
+  <!-- ===== KHUNG TRANG THEO THẺ NGỮ NGHĨA ===== -->
+  <header>
+    <h1>Nguyễn Minh An</h1>
+    <p><em>Sinh viên năm nhất - Ngành Công nghệ Thông tin</em></p>
+    <hr>
+  </header>
+
+  <!-- thanh điều hướng: link neo tới các mục trong trang -->
+  <nav>
+    <a href="#gioi-thieu">Giới thiệu</a> |
+    <a href="#hoc-van">Học vấn</a> |
+    <a href="#so-thich">Sở thích</a> |
+    <a href="#lien-he">Liên hệ</a> |
+    <a href="https://github.com" target="_blank">GitHub của tôi</a>
+  </nav>
+
+  <main>
+    <!-- ===== MỤC GIỚI THIỆU ===== -->
+    <section id="gioi-thieu">
+      <h2>Về tôi</h2>
+      <p>Xin chào! Tôi là <strong>An</strong>, 18 tuổi. Tôi đang học lập trình web và đây là
+        <span>trang web đầu tiên</span> tôi tự tay viết bằng HTML.</p>
+      <p>Slogan của tôi: <mark>Học là để làm, làm là để chia sẻ.</mark></p>
+      <figure>
+        <!-- thay src bằng ảnh bất kỳ bạn có; alt luôn mô tả rõ nội dung ảnh -->
+        <img src="https://placehold.co/300x200/orange/white?text=Anh+da+dien+day"
+             alt="Ảnh chân dung placeholder màu cam" width="300">
+        <figcaption>Đây là chỗ đặt ảnh đại diện của bạn</figcaption>
+      </figure>
+    </section>
+
+    <!-- ===== MỤC HỌC VẬN: BẢNG ===== -->
+    <section id="hoc-van">
+      <h2>Bảng điểm học kỳ gần nhất</h2>
+      <table border="1" cellpadding="6" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Môn học</th>
+            <th>Số tín chỉ</th>
+            <th>Điểm</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Lập trình Web</td>
+            <td>3</td>
+            <td>10</td>
+          </tr>
+          <tr>
+            <td>Toán rời rạc</td>
+            <td>3</td>
+            <td>8</td>
+          </tr>
+          <!-- gộp ô ngang 2 cột bằng colspan -->
+          <tr>
+            <td colspan="2"><strong>Tổng cộng</strong></td>
+            <td>18/20 điểm</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ===== MỤC SỞ THÍCH: DANH SÁCH LỒNG NHAU ===== -->
+    <section id="so-thich">
+      <h2>Sở thích</h2>
+      <ol>
+        <li>Chơi thể thao
+          <ul>
+            <li>Bóng đá cuối tuần</li>
+            <li>Cầu lông buổi tối</li>
+          </ul>
+        </li>
+        <li>Xem phim khoa học viễn tưởng</li>
+        <li>Nấu ăn cho gia đình ngày lễ</li>
+      </ol>
+    </section>
+
+    <!-- ===== FORM LIÊN HỆ (chưa xử lý gửi đi - sẽ dùng JS ở Phần 3) ===== -->
+    <section id="lien-he">
+      <h2>Gửi lời nhắn cho tôi</h2>
+      <form action="#" method="get">
+        <p>
+          <label for="hoten">Họ và tên:</label><br>
+          <input type="text" id="hoten" name="hoten" required placeholder="VD: Trần B">
+        </p>
+        <p>
+          <label for="email">Email:</label><br>
+          <input type="email" id="email" name="email" required placeholder="you@example.com">
+        </p>
+        <p>
+          Bạn biết tôi qua đâu?<br>
+          <input type="radio" id="banbe" name="nguon" value="ban-be">
+          <label for="banbe">Bạn bè giới thiệu</label><br>
+          <input type="radio" id="mangxh" name="nguon" value="mxh">
+          <label for="mangxh">Mạng xã hội</label>
+        </p>
+        <p>
+          Chủ đề muốn nói:<br>
+          <select id="chude" name="chude">
+            <option value="">-- Chọn --</option>
+            <option value="hop-tac">Hợp tác dự án</option>
+            <option value="hoc-hoi">Trao đổi học tập</option>
+          </select>
+        </p>
+        <p>
+          <label for="noidung">Nội dung:</label><br>
+          <textarea id="noidung" name="noidung" rows="5" cols="40"
+                    placeholder="Viết gì đó thân thiện..."></textarea>
+        </p>
+        <button type="submit">Gửi đi</button>
+        <button type="reset">Nhập lại</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <hr>
+    <p>&copy; 2026 Nguyễn Minh An -
+      <a href="mailto:minhan@example.com">minhan@example.com</a></p>
+  </footer>
+
+</body>
+</html>

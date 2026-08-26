@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<!-- MINI APP 2: MÁY TÍNH ĐƠN GIẢN
+     Kỹ năng luyện: đọc input.value - ép kiểu Number() - switch phép tính -
+     validate chia cho 0 - template literal.
+     Đây là dạng đề thi viết hay gặp nhất, hãy gõ lại theo tay! -->
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Máy tính đơn giản</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #eef2ff;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh;
+  }
+  .may-tinh {
+    background: white;
+    padding: 28px;
+    border-radius: 16px;                      /* bài 2.2 */
+    box-shadow: 0 8px 24px rgba(0,0,0,.12);
+    width: 300px;
+    display: flex; flex-direction: column;
+    gap: 12px;
+  }
+  h1 { text-align: center; font-size: 20px; color: #3730a3; }
+  label { font-weight: bold; font-size: 14px; }
+  input, select {
+    padding: 10px;
+    border: 2px solid #c7d2fe;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+  input:focus, select:focus { outline: none; border-color: #4f46e5; }
+  button {
+    margin-top: 8px;
+    padding: 12px;
+    font-size: 18px;
+    background: #4f46e5;
+    color: white;
+    border: none; border-radius: 8px;
+    cursor: pointer;
+  }
+  button:hover { background: #4338ca; }
+  #ketQua {
+    min-height: 28px;                /* chống giao diện nhảy khi chưa có kết quả */
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+  }
+  .loi  { color: #dc2626; }
+  .dung { color: #059669; }
+</style>
+</head>
+<body>
+
+<div class="may-tinh">
+  <h1>Máy tính đơn giản</h1>
+
+  <label for="soA">Số thứ nhất</label>
+  <input type="number" id="soA" placeholder="VD: 10">
+
+  <label for="phepTinh">Phép tính</label>
+  <select id="phepTinh">
+    <option value="+">Cộng (+)</option>
+    <option value="-">Trừ (-)</option>
+    <option value="*">Nhân (*)</option>
+    <option value="/">Chia (/)</option>
+  </select>
+
+  <label for="soB">Số thứ hai</label>
+  <input type="number" id="soB" placeholder="VD: 3">
+
+  <button id="tinh">Tính</button>
+  <p id="ketQua"></p>
+</div>
+
+<script>
+const oA   = document.getElementById("soA");
+const oB   = document.getElementById("soB");
+const oPhep= document.getElementById("phepTinh");
+const ketQua = document.getElementById("ketQua");
+
+document.getElementById("tinh").addEventListener("click", function () {
+
+  // Bước 1: ĐỌC giá trị. input number trả về CHUỖI -> phải Number()!
+  const a = Number(oA.value);
+  const b = Number(oB.value);
+
+  // Bước 2: VALIDATE dữ liệu đầu vào
+  if (oA.value === "" || oB.value === "") {
+    ketQua.textContent = "Bạn nhập thiếu số rồi!";
+    ketQua.className = "loi";
+    return;
+  }
+
+  let kq;
+
+  // Bước 3: dùng switch chọn phép tính (bài 3.2)
+  switch (oPhep.value) {
+    case "+": kq = a + b; break;
+    case "-": kq = a - b; break;
+    case "*": kq = a * b; break;
+    case "/":
+      if (b === 0) {                       // trường hợp đặc biệt phải bắt riêng
+        ketQua.textContent = "Không thể chia cho 0!";
+        ketQua.className = "loi";
+        return;
+      }
+      kq = a / b;
+      break;
+  }
+
+  // Bước 4: hiển thị - toLocaleString làm đẹp dấu phẩy nghìn kiểu Việt Nam
+  ketQua.textContent =
+    `${a} ${oPhep.value} ${b} = ${kq.toLocaleString("vi-VN")}`;
+  ketQua.className = "dung";
+});
+</script>
+
+</body>
+</html>
