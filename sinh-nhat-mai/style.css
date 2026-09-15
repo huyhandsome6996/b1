@@ -184,6 +184,16 @@ canvas#game {
   #fs-btn { top: 1.5%; bottom: auto; left: auto; right: calc(2% + 42px); }
 }
 
+/* màn hình dọc hẹp: HUD tụt xuống dưới hàng nút âm thanh/fullscreen, chip to dễ đọc */
+@media (max-width: 480px) {
+  #hud { top: 14%; }
+  #hud-word .slot { font-size: 8.5px; padding: .2em .4em; letter-spacing: .03em; }
+  #hud-count { font-size: 10px; }
+  /* toast & hint né khỏi HUD (trên) và nút cảm ứng (dưới) */
+  #toast { top: auto; bottom: 38%; }
+  #hint { bottom: 27%; }
+}
+
 /* ================= TOUCH CONTROLS ================= */
 #touch {
   position: absolute; inset: 0;

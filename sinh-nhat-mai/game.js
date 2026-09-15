@@ -7,6 +7,17 @@ const W = 480, H = 270, GROUND = 236, WORLD = 3200;
 const CAKE_X = 2960;
 const GRAV = 0.42, JUMP_V = -7.6, MOVE_A = 0.55, MOVE_MAX = 2.6;
 
+/* VỤC SÂU — nhìn thấy rõ, nhảy qua là được. Rơi vào chỉ quay lại mép an toàn, không mất gì */
+const PITS = [
+  { x: 760,  w: 48 },
+  { x: 1290, w: 56 },
+  { x: 2440, w: 48 }
+];
+/* chân nhân vật đứng TRỌN VỌN trong vùng vực → mới rơi (đứng mép vẫn vững) */
+function pitFull(x1, x2) { return PITS.some(pt => x1 >= pt.x && x2 <= pt.x + pt.w); }
+/* bất kỳ điểm nào chạm vùng vực (dùng để ẩn trang trí/sạn đất) */
+function pitHit(x1, x2)  { return PITS.some(pt => x1 < pt.x + pt.w && x2 > pt.x); }
+
 const ITEMS_DEF = [
   { spr:'balloon', word:'CHÚC',   wish:'Niềm vui nở hoa mỗi ngày 🎈' },
   { spr:'heart',   word:'MỪNG',   wish:'Luôn được yêu thương ❤️' },
@@ -17,8 +28,9 @@ const ITEMS_DEF = [
   { spr:'note',    word:'PHƯƠNG', wish:'Bình an trong tâm hồn 🎵' },
   { spr:'clover',  word:'MAI',    wish:'Thành công rực rỡ 🍀' }
 ];
-const ITEM_XS = [320, 560, 800, 1040, 1280, 1520, 1760, 2200];
-const ITEM_YS = [176, 140, 176, 140, 176, 140, 176, 176];
+/* TẤT CẢ quà nằm NGAY TRÊN ĐƯỜNG đi — đi tới là ăn, không cần nhảy, không cần quay lại */
+const ITEM_XS = [320, 560, 880, 1140, 1420, 1680, 1940, 2200];
+const ITEM_YS = [212, 212, 212, 212, 212, 212, 212, 212];
 
 /* ---------- DOM ---------- */
 const $ = id => document.getElementById(id);
@@ -36,6 +48,7 @@ let state = 'title';          // title | play | finale
 let player, items, particles, collected, cam, t, hintShown;
 let keys = { left:false, right:false, jump:false };
 let jumpLock = false;
+let lastSafeX = 40;   /* vị trí đất an toàn gần nhất — nơi hồi sinh nếu rơi vực */
 let toastTimer = null;
 let cakeHintT = -999;
 let muted = false;
@@ -111,6 +124,7 @@ function stopChiptune() {
 /* ---------- Khởi tạo game ---------- */
 function resetGame() {
   player = { x: 40, y: GROUND - 24, vx: 0, vy: 0, dir: 1, onGround: true, animT: 0 };
+  lastSafeX = 40;
   items = ITEMS_DEF.map((d, i) => ({
     ...d, sprObj: SPRITES[d.spr],
     x: ITEM_XS[i], y: ITEM_YS[i],
@@ -184,17 +198,36 @@ function update() {
   p.vy += GRAV;
   p.x += p.vx; p.y += p.vy;
   p.x = Math.max(0, Math.min(WORLD - 16, p.x));
-  if (p.y >= GROUND - 24) { p.y = GROUND - 24; p.vy = 0; p.onGround = true; }
+
+  /* đứng trên đất — trừ khi đang ở trọn trong vùng vực */
+  if (p.y >= GROUND - 24 && !pitFull(p.x + 4, p.x + 10)) {
+    const deep = p.y > GROUND - 12;   /* vừa bò ra từ lòng vực */
+    p.y = GROUND - 24; p.vy = 0; p.onGround = true;
+    lastSafeX = p.x;
+    if (deep) spawnBurst(p.x + 8, GROUND - 8, ['#c9a377', '#8d5c31', '#ffffff'], 10);
+  } else if (pitFull(p.x + 4, p.x + 10) && p.y > GROUND - 23) {
+    p.onGround = false;
+  }
+
+  /* rơi xuống vực → hồi sinh ở mép đất an toàn, không mất gì cả */
+  if (p.y > H + 40) {
+    p.x = lastSafeX; p.y = GROUND - 30;
+    p.vx = 0; p.vy = 0; p.onGround = false;
+    spawnBurst(p.x + 8, GROUND - 12, ['#ffffff', '#ffd76e', '#9ad9f5'], 12);
+    showToast('😅 Rơi trúng vực rồi! Không sao đâu — nhảy qua cái hố nhỏ là được 💪');
+  }
 
   p.animT += Math.abs(p.vx) > 0.3 ? 1 : 0;
 
-  /* nhặt quà */
-  const pr = { x: p.x + 2, y: p.y + 2, w: 12, h: 20 };
+  /* nhặt quà — vùng hút rộng: chỉ cần đi NGANG QUA là ăn được, kể cả đang nhảy trên đầu quà.
+     Đi thẳng từ đầu tới cuối chắc chắn đủ 8/8, không bao giờ phải quay lại */
+  const pcx = p.x + 8, pbottom = p.y + 24;
   items.forEach(it => {
     if (it.got) return;
     const bobY = it.y + Math.sin(t * 0.05 + it.bob) * 3;
-    if (pr.x < it.x + it.w && pr.x + pr.w > it.x && pr.y < bobY + it.h && pr.y + pr.h > bobY) {
+    if (Math.abs(pcx - (it.x + it.w / 2)) < it.w / 2 + 10 && pbottom > it.y - 52) {
       collectItem(it);
+      return;
     }
     if (Math.random() < 0.02) {
       particles.push({ x: it.x + Math.random() * it.w, y: bobY + Math.random() * it.h,
@@ -209,7 +242,7 @@ function update() {
     } else if (t - cakeHintT > 300) {
       cakeHintT = t;
       const left = ITEMS_DEF.length - collected;
-      showToast(`❗ Chiếc bánh chưa mở! Còn <b>${left}</b> món quà chưa nhặt — hãy đi theo <b>mũi tên vàng</b> để tìm nè`);
+      showToast(`❗ Chiếc bánh chưa mở! Còn <b>${left}</b> món quà nằm ngay trên đường thôi — quay lại nhẹ nhàng là có nha 💛`);
     }
   }
 
@@ -259,27 +292,86 @@ function drawHills(par, color, base, a1, f1, a2, f2, ph) {
 }
 
 const TREES  = [140, 640, 1150, 1620, 2140, 2620, 2880];
-const BUSHES = [300, 900, 1420, 1980, 2450, 2790];
-const FLW    = [220, 470, 730, 1010, 1330, 1710, 2090, 2320, 2560, 2760, 3080];
-const GRASSES= [180, 380, 560, 840, 1100, 1260, 1560, 1840, 2020, 2260, 2480, 2680, 2900, 3060];
+const BUSHES = [300, 900, 1420, 1980, 2540, 2790];
+const FLW    = [220, 470, 730, 1010, 1370, 1710, 2090, 2320, 2560, 2760, 3080];
+const GRASSES= [180, 380, 560, 840, 1100, 1230, 1560, 1840, 2020, 2260, 2510, 2680, 2900, 3060];
 
 function drawDecor() {
-  TREES.forEach(x => { const sx = x - cam; if (sx > -25 && sx < W) drawSprite(ctx, SPRITES.tree, sx, GROUND - 20, false); });
-  BUSHES.forEach(x => { const sx = x - cam; if (sx > -18 && sx < W) drawSprite(ctx, SPRITES.bush, sx, GROUND - 5, false); });
-  FLW.forEach((x, i) => { const sx = x - cam; if (sx > -8 && sx < W) drawSprite(ctx, i % 2 ? SPRITES.dflower2 : SPRITES.dflower, sx, GROUND - 5, false); });
-  GRASSES.forEach(x => { const sx = x - cam; if (sx > -6 && sx < W) drawSprite(ctx, SPRITES.grass, sx, GROUND - 4, false); });
+  const skip = x => pitHit(x - 2, x + 26); /* không vẽ trang trí đè lên lòng vực */
+  TREES.forEach(x => { if (skip(x)) return; const sx = x - cam; if (sx > -25 && sx < W) drawSprite(ctx, SPRITES.tree, sx, GROUND - 20, false); });
+  BUSHES.forEach(x => { if (skip(x)) return; const sx = x - cam; if (sx > -18 && sx < W) drawSprite(ctx, SPRITES.bush, sx, GROUND - 5, false); });
+  FLW.forEach((x, i) => { if (skip(x)) return; const sx = x - cam; if (sx > -8 && sx < W) drawSprite(ctx, i % 2 ? SPRITES.dflower2 : SPRITES.dflower, sx, GROUND - 5, false); });
+  GRASSES.forEach(x => { if (skip(x)) return; const sx = x - cam; if (sx > -6 && sx < W) drawSprite(ctx, SPRITES.grass, sx, GROUND - 4, false); });
+}
+
+/* Biển gỗ mũi tên vàng: đi thẳng + báo trước chỗ vực */
+const SIGNS = [110, 700, 1230, 2380];
+function drawSigns() {
+  SIGNS.forEach(x => {
+    if (pitHit(x - 2, x + 26)) return;
+    const sx = (x - cam) | 0;
+    if (sx < -30 || sx > W) return;
+    ctx.fillStyle = '#6e4529'; ctx.fillRect(sx + 9, GROUND - 13, 4, 13);
+    ctx.fillStyle = '#8a5a3b'; ctx.fillRect(sx, GROUND - 27, 22, 14);
+    ctx.fillStyle = '#5b3a22';
+    ctx.fillRect(sx, GROUND - 27, 22, 1);
+    ctx.fillRect(sx, GROUND - 14, 22, 1);
+    ctx.fillRect(sx, GROUND - 27, 1, 14);
+    ctx.fillRect(sx + 21, GROUND - 27, 1, 14);
+    drawSprite(ctx, SPRITES.arrowR, sx + 7, GROUND - 24, false);
+  });
+}
+
+/* Đất được vẽ theo từng đoạn, chừa lại các khoảng vực */
+const G_SEGS = (() => {
+  let segs = [[0, WORLD]];
+  PITS.forEach(p => {
+    const next = [];
+    segs.forEach(([a, b]) => {
+      if (p.x + p.w <= a || p.x >= b) { next.push([a, b]); return; }
+      if (p.x > a) next.push([a, p.x]);
+      if (p.x + p.w < b) next.push([p.x + p.w, b]);
+    });
+    segs = next;
+  });
+  return segs;
+})();
+
+function drawPost(px) {  /* cọc cảnh báo sọc vàng-đen đặt hai mép vực */
+  ctx.fillStyle = '#ffd76e'; ctx.fillRect(px, GROUND - 9, 4, 9);
+  ctx.fillStyle = '#2b2233';
+  ctx.fillRect(px, GROUND - 9, 4, 2);
+  ctx.fillRect(px, GROUND - 5, 4, 2);
 }
 
 function drawGround() {
-  ctx.fillStyle = '#67c455'; ctx.fillRect(0, GROUND, W, 4);
-  ctx.fillStyle = '#8adf79'; ctx.fillRect(0, GROUND, W, 2);
-  ctx.fillStyle = '#a4713f'; ctx.fillRect(0, GROUND + 4, W, H - GROUND - 4);
+  G_SEGS.forEach(([a, b]) => {
+    const sx = a - cam, sw = b - a;
+    if (sx + sw < 0 || sx > W) return;
+    ctx.fillStyle = '#67c455'; ctx.fillRect(sx, GROUND, sw, 4);
+    ctx.fillStyle = '#8adf79'; ctx.fillRect(sx, GROUND, sw, 2);
+    ctx.fillStyle = '#a4713f'; ctx.fillRect(sx, GROUND + 4, sw, H - GROUND - 4);
+  });
   ctx.fillStyle = '#8d5c31';
   for (let i = 0; i < 42; i++) {
     const wx = (i * 97 + 13) % WORLD;
+    if (pitHit(wx, wx + 3)) continue;
     const sx = wx - cam;
     if (sx > -3 && sx < W) ctx.fillRect(sx, GROUND + 10 + ((i * 29) % 26), 3, 2);
   }
+  /* LÒNG VỰC — tối dần xuống sâu, nhìn phát biết là phải nhảy */
+  PITS.forEach(pt => {
+    const sx = pt.x - cam;
+    if (sx > W || sx + pt.w < 0) return;
+    ctx.fillStyle = '#2a1810'; ctx.fillRect(sx, GROUND, pt.w, 10);
+    ctx.fillStyle = '#1a0e0a'; ctx.fillRect(sx, GROUND + 10, pt.w, 14);
+    ctx.fillStyle = '#0b0507'; ctx.fillRect(sx, GROUND + 24, pt.w, H - GROUND - 24);
+    ctx.fillStyle = '#4a2e1c'; ctx.fillRect(sx, GROUND, 2, 34);
+    ctx.fillStyle = '#3a2317'; ctx.fillRect(sx + pt.w - 2, GROUND, 2, 34);
+    ctx.fillStyle = '#67c455'; ctx.fillRect(sx - 1, GROUND, 1, 5);
+    ctx.fillStyle = '#67c455'; ctx.fillRect(sx + pt.w, GROUND, 1, 4);
+    drawPost(sx - 7); drawPost(sx + pt.w + 3);
+  });
 }
 
 function drawCake() {
@@ -348,9 +440,11 @@ function drawPlayer() {
   if (!p.onGround) spr = SPRITES.player_jump;
   else if (Math.abs(p.vx) > 0.3) spr = (p.animT >> 3) % 2 ? SPRITES.player_walk1 : SPRITES.player_walk2;
   else spr = SPRITES.player_idle;
-  /* bóng đổ */
-  ctx.fillStyle = 'rgba(0,0,0,.18)';
-  ctx.fillRect((p.x + 1 - cam) | 0, GROUND - 1, 13, 2);
+  /* bóng đổ — chỉ vẽ khi đứng trên đất, không vẽ trên lòng vực */
+  if (!pitFull(p.x + 4, p.x + 10)) {
+    ctx.fillStyle = 'rgba(0,0,0,.18)';
+    ctx.fillRect((p.x + 1 - cam) | 0, GROUND - 1, 13, 2);
+  }
   drawSprite(ctx, spr, (p.x - cam) | 0, p.y | 0, p.dir === -1);
 }
 
@@ -368,6 +462,7 @@ function render() {
   drawHills(0.75, '#7fc86e', 18, 10, 0.016, 6, 0.042, 1.4);
   drawGround();
   drawDecor();
+  drawSigns();
   drawCake();
   drawItems();
   drawGuides();
@@ -519,10 +614,15 @@ document.addEventListener('keyup', e => {
 const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) ||
   (window.matchMedia && (matchMedia('(pointer: coarse)').matches || matchMedia('(max-width: 820px)').matches));
 
-/* dự phòng: nếu thiết bị chạm thực sự mà chưa hiện nút → hiện ngay khi chạm */
-document.addEventListener('touchstart', () => {
-  if (state === 'play') touchEl.classList.remove('hidden');
-}, { passive: true, once: true });
+/* dự phòng chắc chắn cho điện thoại: BẤT KỲ lần chạm nào khi đang chơi cũng hiện nút
+   (không dùng once:true — listener cũ bị lần chạm mở game "ăn mất" làm nút không bao giờ hiện) */
+['touchstart', 'pointerdown'].forEach(ev => {
+  document.addEventListener(ev, e => {
+    if (state === 'play' && touchEl.classList.contains('hidden')) {
+      if (ev === 'touchstart' || e.pointerType === 'touch') touchEl.classList.remove('hidden');
+    }
+  }, { passive: true });
+});
 
 /* nút toàn màn hình (nếu trình duyệt hỗ trợ) */
 const fsBtn = $('fs-btn');
@@ -556,6 +656,10 @@ function bindTouch(id, prop) {
   b.addEventListener('pointerup', off);
   b.addEventListener('pointerleave', off);
   b.addEventListener('pointercancel', off);
+  /* fallback cho trình duyệt cũ không có Pointer Events (iOS cũ) */
+  b.addEventListener('touchstart', on, { passive: false });
+  b.addEventListener('touchend', off, { passive: false });
+  b.addEventListener('touchcancel', off, { passive: false });
 }
 bindTouch('btn-left', 'left');
 bindTouch('btn-right', 'right');
