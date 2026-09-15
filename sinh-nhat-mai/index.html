@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Chúc Mừng Sinh Nhật Phương Mai 🎂</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎂</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="stage">
+  <div id="game-wrap">
+    <canvas id="game" width="480" height="270"></canvas>
+
+    <!-- HUD -->
+    <div id="hud" class="hidden">
+      <div id="hud-word" aria-label="Câu chúc"></div>
+      <div id="hud-count">🎁 0/8</div>
+    </div>
+
+    <!-- Toast thông báo nhặt quà -->
+    <div id="toast" class="hidden"></div>
+
+    <!-- Gợi ý đi đến bánh -->
+    <div id="hint" class="hidden">🎂 Chiếc bánh đang chờ ở cuối đường →</div>
+
+    <!-- Nút âm thanh -->
+    <button id="mute-btn" class="hidden" title="Bật / tắt âm thanh">🔊</button>
+
+    <!-- Điều khiển cảm ứng -->
+    <div id="touch" class="hidden">
+      <div class="t-group t-left">
+        <button id="btn-left" aria-label="Trái">◀</button>
+        <button id="btn-right" aria-label="Phải">▶</button>
+      </div>
+      <div class="t-group t-right">
+        <button id="btn-jump" aria-label="Nhảy">⬆</button>
+      </div>
+    </div>
+
+    <!-- Màn hình tiêu đề -->
+    <div id="title-screen" class="overlay">
+      <div class="title-inner">
+        <div class="title-flag">🎉 &nbsp;A TINY PIXEL GAME&nbsp; 🎉</div>
+        <h1 class="title-big">CHÚC MỪNG<br><span>SINH NHẬT</span></h1>
+        <div class="title-name">🎀 Đặng Hoàng Phương Mai 🎀</div>
+        <p class="title-desc">Chạy · nhảy · thu thập <b>8 món quà</b> trên hành trình,<br>mỗi món quà là một lời chúc dành cho bạn.</p>
+        <button id="start-btn">▶ &nbsp;BẤM VÀO ĐÂY ĐỂ BẮT ĐẦU</button>
+        <div class="title-controls">
+          <span>⬅️➡️ / A D — Di chuyển</span>
+          <span>⬆️ / Space — Nhảy</span>
+          <span>📱 Có nút cảm ứng</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Màn kết -->
+    <div id="finale" class="overlay hidden">
+      <canvas id="confetti"></canvas>
+      <div class="finale-inner">
+        <div class="polaroid pop hidden" id="polaroid">
+          <img src="assets/mai.png" alt="Đặng Hoàng Phương Mai">
+          <div class="pola-cap">✨ Phương Mai của chúng ta ✨</div>
+        </div>
+        <h1 id="fin-line1" class="hidden"></h1>
+        <h2 id="fin-line2" class="hidden">ĐẶNG HOÀNG PHƯƠNG MAI ✨</h2>
+        <p id="fin-line3" class="hidden">Tuổi mới thật rực rỡ — luôn cười tươi, thật khỏe,<br>mọi điều ước đều thành hiện thực nhé! ❤️</p>
+        <div class="fin-btns hidden" id="fin-btns">
+          <button id="replay-btn">🔁 Chơi lại</button>
+          <button id="song-btn">🔊 Bài hát</button>
+        </div>
+        <div class="fin-credit hidden" id="fin-credit">made with ❤️ — dành riêng cho Mai</div>
+      </div>
+    </div>
+
+    <audio id="song" src="assets/birthday-song.mp3" preload="auto"></audio>
+  </div>
+</div>
+<script src="sprites.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
