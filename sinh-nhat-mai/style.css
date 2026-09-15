@@ -135,6 +135,55 @@ canvas#game {
 }
 #mute-btn:hover { background: #000000aa; }
 
+#fs-btn {
+  position: absolute; top: 13%; right: calc(2% + 46px);
+  z-index: 20;
+  background: #00000066;
+  color: #fff;
+  border: 2px solid #ffffff55;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: clamp(12px, 2.4vw, 20px);
+  padding: .2em .45em;
+  cursor: pointer;
+}
+#fs-btn:hover { background: #000000aa; }
+
+/* ================= GỢI Ý XOAY NGANG ================= */
+#rotate-hint {
+  position: absolute; bottom: 22%; left: 50%; transform: translateX(-50%);
+  z-index: 30;
+  background: var(--cream);
+  color: var(--ink);
+  border: 3px solid var(--ink);
+  border-radius: 8px;
+  box-shadow: 0 4px 0 #00000066;
+  padding: .5em 1em;
+  font-size: clamp(10px, 2.4vw, 16px);
+  font-weight: 600;
+  pointer-events: none;
+  white-space: nowrap;
+  animation: toastIn .3s cubic-bezier(.2,2,.4,1);
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 700px) {
+  /* HUD gọn 2 hàng: từ ngữ trên, đếm dưới */
+  #hud {
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 96%;
+    top: 1.5%;
+  }
+  #hud-word { justify-content: center; row-gap: 3px; }
+  #hud-word .slot { font-size: 8px; padding: .18em .38em; border-radius: 3px; }
+  #hud-count { font-size: 10px; }
+  /* nút âm thanh/fullscreen lên góc trên phải, tránh vùng ngón tay */
+  #mute-btn { top: 1.5%; bottom: auto; left: auto; right: 2%; transform: none; }
+  #fs-btn { top: 1.5%; bottom: auto; left: auto; right: calc(2% + 42px); }
+}
+
 /* ================= TOUCH CONTROLS ================= */
 #touch {
   position: absolute; inset: 0;

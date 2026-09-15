@@ -17,8 +17,8 @@ const ITEMS_DEF = [
   { spr:'note',    word:'PHƯƠNG', wish:'Bình an trong tâm hồn 🎵' },
   { spr:'clover',  word:'MAI',    wish:'Thành công rực rỡ 🍀' }
 ];
-const ITEM_XS = [320, 560, 800, 1040, 1280, 1520, 1760, 2000];
-const ITEM_YS = [176, 140, 176, 140, 176, 140, 176, 140];
+const ITEM_XS = [320, 560, 800, 1040, 1280, 1520, 1760, 2200];
+const ITEM_YS = [176, 140, 176, 140, 176, 140, 176, 176];
 
 /* ---------- DOM ---------- */
 const $ = id => document.getElementById(id);
@@ -37,6 +37,7 @@ let player, items, particles, collected, cam, t, hintShown;
 let keys = { left:false, right:false, jump:false };
 let jumpLock = false;
 let toastTimer = null;
+let cakeHintT = -999;
 let muted = false;
 
 /* ---------- ÂM THANH ---------- */
@@ -201,9 +202,15 @@ function update() {
     }
   });
 
-  /* đích: chiếc bánh */
-  if (collected === ITEMS_DEF.length && p.x + 12 > CAKE_X - 6) {
-    startFinale();
+  /* đích: chiếc bánh — đủ 8 quà mới mở */
+  if (p.x + 12 > CAKE_X - 6) {
+    if (collected === ITEMS_DEF.length) {
+      startFinale();
+    } else if (t - cakeHintT > 300) {
+      cakeHintT = t;
+      const left = ITEMS_DEF.length - collected;
+      showToast(`❗ Chiếc bánh chưa mở! Còn <b>${left}</b> món quà chưa nhặt — hãy đi theo <b>mũi tên vàng</b> để tìm nè`);
+    }
   }
 
   /* hạt tim sau lưng khi chạy */
@@ -307,6 +314,34 @@ function drawItems() {
   });
 }
 
+/* Vòng sáng + mũi tên vàng dẫn tới món quà chưa nhặt gần nhất */
+function drawGuides() {
+  const remaining = items.filter(it => !it.got);
+  if (!remaining.length || state !== 'play') return;
+  let nearest = remaining[0], best = Infinity;
+  remaining.forEach(it => {
+    const d = Math.abs(it.x + it.w / 2 - (player.x + 6));
+    if (d < best) { best = d; nearest = it; }
+  });
+  remaining.forEach(it => {
+    const sx = it.x - cam;
+    if (sx < -24 || sx > W + 24) return;
+    const sy = it.y + Math.sin(t * 0.05 + it.bob) * 3;
+    const isNear = it === nearest;
+    const a = (isNear ? 0.20 : 0.09) + 0.07 * Math.sin(t * 0.12);
+    const pad = isNear ? 5 : 3;
+    ctx.fillStyle = isNear
+      ? `rgba(255,215,110,${a.toFixed(3)})`
+      : `rgba(255,255,255,${(a * 0.8).toFixed(3)})`;
+    ctx.fillRect(sx - pad, sy - pad, it.w + pad * 2, it.h + pad * 2);
+  });
+  /* quà ngoài màn hình → mũi tên ở mép chỉ hướng */
+  const nsx = nearest.x - cam;
+  const ay = (150 + Math.sin(t * 0.1) * 5) | 0;
+  if (nsx < -12) drawSprite(ctx, SPRITES.arrowL, 8, ay, false);
+  else if (nsx > W + 12) drawSprite(ctx, SPRITES.arrowR, W - 16, ay, false);
+}
+
 function drawPlayer() {
   const p = player;
   let spr;
@@ -335,6 +370,7 @@ function render() {
   drawDecor();
   drawCake();
   drawItems();
+  drawGuides();
   drawPlayer();
   drawParticles();
 }
@@ -481,12 +517,36 @@ document.addEventListener('keyup', e => {
 });
 
 const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) ||
-  (window.matchMedia && matchMedia('(pointer: coarse)').matches);
+  (window.matchMedia && (matchMedia('(pointer: coarse)').matches || matchMedia('(max-width: 820px)').matches));
 
 /* dự phòng: nếu thiết bị chạm thực sự mà chưa hiện nút → hiện ngay khi chạm */
 document.addEventListener('touchstart', () => {
   if (state === 'play') touchEl.classList.remove('hidden');
 }, { passive: true, once: true });
+
+/* nút toàn màn hình (nếu trình duyệt hỗ trợ) */
+const fsBtn = $('fs-btn');
+if (document.documentElement.requestFullscreen) {
+  fsBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  });
+}
+
+/* gợi ý xoay ngang trên điện thoại dọc */
+const rotateHint = $('rotate-hint');
+let rotateHintTimer = null;
+function maybeShowRotateHint() {
+  if (window.innerHeight > window.innerWidth && window.innerWidth < 820) {
+    rotateHint.classList.remove('hidden');
+    clearTimeout(rotateHintTimer);
+    rotateHintTimer = setTimeout(() => rotateHint.classList.add('hidden'), 4500);
+  }
+}
+window.addEventListener('orientationchange', () => setTimeout(maybeShowRotateHint, 300));
 
 function bindTouch(id, prop) {
   const b = $(id);
@@ -511,6 +571,10 @@ startBtn.addEventListener('click', () => {
   titleEl.style.opacity = '0';
   setTimeout(() => titleEl.classList.add('hidden'), 480);
 
+  /* nút fullscreen + gợi ý xoay ngang */
+  if (document.documentElement.requestFullscreen) fsBtn.classList.remove('hidden');
+  maybeShowRotateHint();
+
   if (urlSkip) {           /* chế độ xem thử màn kết */
     resetGame();
     ITEMS_DEF.forEach((d, i) => { items[i].got = true; });
@@ -534,6 +598,11 @@ startBtn.addEventListener('click', () => {
 resetGame();
 render();
 loop();
+
+/* đề phòng: chạm/click bất kỳ cũng mở khóa âm thanh trên iOS */
+document.addEventListener('pointerdown', () => {
+  if (actx && actx.state === 'suspended') actx.resume();
+}, { passive: true });
 
 /* hook debug (tiện kiểm tra tự động, vô hại khi chơi) */
 window.__mai = {

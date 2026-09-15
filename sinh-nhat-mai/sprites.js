@@ -376,6 +376,37 @@ const SPRITES = {
       "gg.gg",
       "ggggg"
     ]
+  },
+
+  /* ---------- MŨI TÊN DẪN ĐƯỜNG ---------- */
+  arrowR: {
+    map: { k:'#2b2233', y:'#ffd76e' },
+    rows: [
+      ".kk.....",
+      ".kyk....",
+      ".kyyk...",
+      ".kyyyk..",
+      "kyyyyyk.",
+      ".kyyyk..",
+      ".kyyk...",
+      ".kyk....",
+      ".kk....."
+    ]
+  },
+
+  arrowL: {
+    map: { k:'#2b2233', y:'#ffd76e' },
+    rows: [
+      ".....kk.",
+      "....kyk.",
+      "...kyyk.",
+      "..kyyyk.",
+      "kyyyyyk.",
+      "..kyyyk.",
+      "...kyyk.",
+      "....kyk.",
+      ".....kk."
+    ]
   }
 };
 
