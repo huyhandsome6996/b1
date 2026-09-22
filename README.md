@@ -6,6 +6,7 @@ Repository lưu 2 nội dung chính:
 
 | Nhóm | File |
 |------|------|
+| 🔥 **Tài liệu ôn cấp tốc VSTEP B1** | [`On-thi-cap-toc-VSTEP-B1.docx`](On-thi-cap-toc-VSTEP-B1.docx) — ôn nhanh 1 đêm cho người mất gốc: 12 bài ngữ pháp, từ vựng 8 chủ đề, chiến lược 4 kỹ năng, khung Writing/Speaking có sẵn, bảng công thức phút chót |
 | Sách luyện PET | `PET 2 Book.pdf` → `PET 6 Book.pdf` |
 | Báo cáo tự học | `Bao-cao-tu-hoc-Self-study-Tieng-Anh-B1.docx/.pdf` |
 | Tổng kết kiến thức | `Self-study-tong-ket-nhung-gi-da-hoc.docx/.pdf` |
