@@ -7,7 +7,7 @@ Repository lưu 2 nội dung chính:
 | Nhóm | File |
 |------|------|
 | 🔥 **Tài liệu ôn cấp tốc VSTEP B1** | [`On-thi-cap-toc-VSTEP-B1.docx`](On-thi-cap-toc-VSTEP-B1.docx) — ôn nhanh 1 đêm cho người mất gốc: 12 bài ngữ pháp, từ vựng 8 chủ đề, chiến lược 4 kỹ năng, khung Writing/Speaking có sẵn, bảng công thức phút chót |
-| ✍️ **Bộ bài tập ôn thi VSTEP B1** | [`Bai-tap-on-thi-VSTEP-B1.docx`](Bai-tap-on-thi-VSTEP-B1.docx) — 84 câu tự luyện kèm đáp án chi tiết: ngữ pháp 30 câu, chia động từ 10 câu, từ vựng 20 câu, Reading 3 bài 16 câu, viết lại câu 8 câu + đề Writing/Speaking có bài mẫu — làm kèm tài liệu ôn cấp tốc, sai ở đâu xem lại công thức ở đó |
+| ✍️ **Bộ bài tập ôn thi VSTEP B1** | [`Bai-tap-on-thi-VSTEP-B1.docx`](Bai-tap-on-thi-VSTEP-B1.docx) — 84 câu tự luyện kèm đáp án chi tiết: ngữ pháp 30 câu, chia động từ 10 câu, từ vựng 20 câu, Reading 3 bài 16 câu, viết lại câu 8 câu + đề Writing/Speaking có bài mẫu — và Phần 8 là **đề thi thử Practice Test 3 (form Paper 2 thật)**: mẹo riêng từng phần + giải chi tiết từng câu chỉ rõ bẫy ở đâu + khung thư mời dùng cho mọi đề email |
 | Sách luyện PET | `PET 2 Book.pdf` → `PET 6 Book.pdf` |
 | Báo cáo tự học | `Bao-cao-tu-hoc-Self-study-Tieng-Anh-B1.docx/.pdf` |
 | Tổng kết kiến thức | `Self-study-tong-ket-nhung-gi-da-hoc.docx/.pdf` |
